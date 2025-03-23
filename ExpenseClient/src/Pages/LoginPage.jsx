@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { isCookie, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import bgImage from '../Utilites/images/bg.png'; 
 const LoginPages = () => {
@@ -7,6 +7,27 @@ const LoginPages = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const onFinish = async (values)=>{
+    try {
+      const res = await fetch("https://localhost:7247/api/Auths/login",{
+        method : "POST",
+        body:JSON.stringify(values),
+        headers:{"Content-Type":"application/json; charset=UTF-8"},
+      });
+      const data = await res.json();
+      if(res.status === 200 || res.status === 201){
+        const token = data.accessToken;
+        localStorage.setItem("authToken", token);
+      }
+      else{
+        console.log("Kullanıcı adi veya şifre hatalı!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
      <motion.div
@@ -43,7 +64,7 @@ const LoginPages = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="w-full bg-[#3eb599] text-white py-2 rounded-md text-lg font-bold focus:ring-[#3eb599] hover:bg-[#38a189]">Sign In</button>
+          <button onClick={()=>onFinish({email,password})} className="w-full bg-[#3eb599] text-white py-2 rounded-md text-lg font-bold focus:ring-[#3eb599] hover:bg-[#38a189]">Sign In</button>
         </div>
         </div>
         

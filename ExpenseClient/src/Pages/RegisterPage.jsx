@@ -7,7 +7,28 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username , setUsername] = useState("");
+  const [roleId , setRoleId] = useState("00000000-0000-0000-0000-000000000002");
   
+  const onFinish = async(values)=>{
+    try {
+      const res = await fetch("https://localhost:7247/api/Auths/register",{
+        method : "POST",
+        body:JSON.stringify(values),
+        headers:{"Content-Type":"application/json; charset=UTF-8"},
+      });
+      const data = await res.json();
+      if(res.status === 200 || res.status === 201){
+        const d = data.message;
+        console.log(d);
+      }
+      else{
+        console.log("Beklenmedik bir hata oluştu");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const navigate = useNavigate();
   return (
     <>
@@ -62,7 +83,7 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="w-full bg-[#3eb599] text-white py-2 rounded-md text-lg font-bold focus:ring-[#3eb599] hover:bg-[#38a189]">Sign Up</button>
+          <button onClick={()=>onFinish({username,email,password,roleId})} className="w-full bg-[#3eb599] text-white py-2 rounded-md text-lg font-bold focus:ring-[#3eb599] hover:bg-[#38a189]">Sign Up</button>
         </div>
       </div>
     </div>
