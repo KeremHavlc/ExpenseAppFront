@@ -18,8 +18,9 @@ const RegisterPage = () => {
       });
       const data = await res.json();
       if(res.status === 200 || res.status === 201){
-        const d = data.message;
-        console.log(d);
+        const msg = data.message;
+        console.log(msg);
+        navigate("/login");
       }
       else{
         console.log("Beklenmedik bir hata oluştu");

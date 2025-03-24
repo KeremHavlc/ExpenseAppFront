@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { isCookie, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import bgImage from '../Utilites/images/bg.png'; 
 const LoginPages = () => {
@@ -14,11 +14,12 @@ const LoginPages = () => {
         method : "POST",
         body:JSON.stringify(values),
         headers:{"Content-Type":"application/json; charset=UTF-8"},
+        credentials:"include"
       });
       const data = await res.json();
       if(res.status === 200 || res.status === 201){
         const token = data.accessToken;
-        localStorage.setItem("authToken", token);
+        navigate("/home")
       }
       else{
         console.log("Kullanıcı adi veya şifre hatalı!");
