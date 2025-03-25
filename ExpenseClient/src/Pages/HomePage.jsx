@@ -7,7 +7,8 @@ const HomePage = () => {
         try {
             const res = await fetch("https://localhost:7247/api/Auths/logout",{
                 method:"POST",            
-                headers:{"Content-Type":"application/json; charset=UTF-8"},
+                credentials: "include",
+                headers:{"Content-Type":"application/json; charset=UTF-8"}
             });
              const data = await res.json();
       if(res.status === 200 || res.status === 201){

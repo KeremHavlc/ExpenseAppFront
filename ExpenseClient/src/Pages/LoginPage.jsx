@@ -12,9 +12,9 @@ const LoginPages = () => {
     try {
       const res = await fetch("https://localhost:7247/api/Auths/login",{
         method : "POST",
+        credentials:"include",
         body:JSON.stringify(values),
-        headers:{"Content-Type":"application/json; charset=UTF-8"},
-        credentials:"include"
+        headers:{"Content-Type":"application/json; charset=UTF-8"}
       });
       const data = await res.json();
       if(res.status === 200 || res.status === 201){
