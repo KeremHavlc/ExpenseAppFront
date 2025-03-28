@@ -12,41 +12,47 @@ const AddExpensePage = () => {
   const [description, setDescription] = useState('');
 
   useEffect(() => {
-    // API'den kategorileri al
     axios.get('https://localhost:7247/api/Categories/GetAllCategories', { withCredentials: true })
-      .then(response => {
-        setCategories(response.data);
-      })
-      .catch(error => {
-        console.error("Kategori verileri alınırken hata oluştu:", error);
-      });
+      .then(response => setCategories(response.data))
+      .catch(error => console.error("Kategori verileri alınırken hata oluştu:", error));
   }, []);
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategoryId(event.target.value);  // Seçilen kategori id'sini güncelle
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const expenseData = {
-      expenseName,
+      title: expenseName,             // 'expenseName' yerine 'title' olacak
       categoryId: selectedCategoryId,
-      amount,
-      date,
+      amount: parseFloat(amount),     // API 'number' formatında bekliyor
+      expenseDate: date,              // 'date' yerine 'expenseDate' olacak
       description,
+      userId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"  // Geçici olarak sabit userId ekledim
     };
+    console.log("Gönderilen Veri:", expenseData);
+    try {
+      const response = await axios.post('https://localhost:7247/api/Expenses/AddExpense', expenseData, { withCredentials: true });
+      console.log("Expense added successfully:", response.data);
 
-    // Expense ekleme API isteği
-    axios.post('https://localhost:7247/api/Expenses/AddExpense', expenseData, { withCredentials: true })
-      .then(response => {
-        console.log("Expense added successfully:", response.data);
-        // Başarıyla ekledikten sonra yönlendirme veya işlem yapılabilir.
-      })
-      .catch(error => {
-        console.error("Expense eklenirken hata oluştu:", error);
-      });
-  };
+      alert('Expense successfully added!');
+
+      // Formu sıfırla
+      setExpenseName('');
+      setAmount('');
+      setDate('');
+      setDescription('');
+      setSelectedCategoryId('');
+    } catch (error) {
+      console.error("Expense eklenirken hata oluştu:", error);
+
+      // Hata detaylarını daha iyi görmek için geliştirilmiş hata gösterimi
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errorMessages = Object.values(error.response.data.errors).flat().join('\n');
+        alert(`An error occurred:\n${errorMessages}`);
+      } else {
+        alert('An error occurred while adding the expense.');
+      }
+    }
+};
 
   return (
     <> 
@@ -78,7 +84,7 @@ const AddExpensePage = () => {
                   id="category" 
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg" 
                   value={selectedCategoryId} 
-                  onChange={handleCategoryChange} 
+                  onChange={(e) => setSelectedCategoryId(e.target.value)} 
                   required
                 >
                   <option value="">Select Category</option>
@@ -132,7 +138,6 @@ const AddExpensePage = () => {
                   type="button" 
                   className="w-1/2 px-4 py-2 text-red-500 border border-red-700 rounded-lg hover:bg-red-500 hover:text-white transition"
                   onClick={() => {
-                    // Formu sıfırlamak için
                     setExpenseName('');
                     setAmount('');
                     setDate('');
