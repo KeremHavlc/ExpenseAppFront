@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, Pagination, Button, Modal, notification } from "antd";
+import { Card, Pagination, Button, Modal, notification, message } from "antd";
 import Header from "../Components/Header";
 import Sidebar from "../Components/Sidebar";
-
+import { toast, ToastContainer } from "react-fox-toast";
 const AllCategoriesPage = () => {
   const [categories, setCategories] = useState([]);
   const [totalCategories, setTotalCategories] = useState(0);
@@ -43,33 +43,25 @@ const AllCategoriesPage = () => {
     fetchCategories(currentPage);
   }, [currentPage]);
 
-  const deleteCategory = (categoryId) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this category?",
-      onOk: async () => {
-        try {
-          // Kategori ID'sini URL parametresi olarak gönderiyoruz
-          await axios.post(
-            `https://localhost:7247/api/Categories/DeleteCategory?categoryId=${categoryId}`, // URL parametresiyle
-            {},
-            {
-              withCredentials: true,
-            }
-          );
-          notification.success({
-            message: "Category Deleted",
-            description: "The category has been deleted successfully.",
-          });
-          fetchCategories(currentPage); // Silme işleminden sonra kategorileri güncelliyoruz
-        } catch (error) {
-          console.error("Error Deleting Category:", error);
-          notification.error({
-            message: "Error Deleting Category",
-            description: "There was an error while deleting the category.",
-          });
-        }
-      },
-    });
+  const deleteCategory = async (categoryId) => {
+    try {
+      const res = await axios.post(
+        `https://localhost:7247/api/Categories/DeleteCategory?categoryId=${categoryId}`,
+        null,
+        { withCredentials: true }
+      );
+      console.log(res);
+      if (res.status == 200) {
+        console.log("Kategori silme işlemi başarılı!");
+        toast.success("Successfully deleted a category");
+        fetchCategories();
+      }
+    } catch (error) {
+      console.error("Silme işlemi sırasında hata oluştu:", error);
+      toast.error(
+        "You cannot delete this category because it contains expenses!"
+      );
+    }
   };
 
   const editCategory = (category) => {
@@ -84,26 +76,33 @@ const AllCategoriesPage = () => {
 
   const handleEditOk = async () => {
     try {
-      await axios.put(
-        `https://localhost:7247/api/Categories/${selectedCategory.id}`,
-        selectedCategory
+      const { id, categoryName } = selectedCategory;
+      const res = await axios.post(
+        `https://localhost:7247/api/Categories/UpdateCategory/${id}`,
+        { categoryName }, // Gönderdiğimiz veri
+        { withCredentials: true } // Gerekli kimlik doğrulama için
       );
-      notification.success({
-        message: "Category Updated",
-        description: "The category has been updated successfully.",
-      });
-      setIsModalVisible(false);
-      fetchCategories(currentPage);
+
+      if (res.status === 200 || res.status === 201) {
+        notification.success({
+          message: "Category Updated",
+          description: "The category has been updated successfully.",
+        });
+        setIsModalVisible(false);
+        fetchCategories(currentPage); // Kategorileri tekrar yükle
+      }
     } catch (error) {
       notification.error({
         message: "Error Updating Category",
         description: "There was an error while updating the category.",
       });
+      console.error("Error updating category:", error);
     }
   };
 
   return (
     <>
+      <ToastContainer position="top-center" />
       <Header />
       <div className="flex h-screen bg-gray-100">
         <Sidebar />
