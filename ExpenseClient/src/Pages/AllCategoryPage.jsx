@@ -104,9 +104,9 @@ const AllCategoriesPage = () => {
     <>
       <ToastContainer position="top-center" />
       <Header />
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex h-screen ">
         <Sidebar />
-        <div className="flex-1 p-8 bg-white rounded-lg shadow-md">
+        <div className="flex-1 p-8 rounded-lg shadow-md bg-gray-200">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">
             All Categories
           </h1>
@@ -158,7 +158,7 @@ const AllCategoriesPage = () => {
             total={totalCategories}
             pageSize={8}
             onChange={(page) => setCurrentPage(page)}
-            className="mt-6 text-center"
+            className="flex justify-center mt-6"
           />
         </div>
       </div>

@@ -43,9 +43,9 @@ const AddCategoryPage = () => {
   return (
     <>
       <Header />
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex h-screen ">
         <Sidebar />
-        <div className="flex-1 p-8 bg-white rounded-lg shadow-md">
+        <div className="flex-1 p-8 rounded-lg shadow-md bg-gray-200">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">
             Add New Category
           </h1>
