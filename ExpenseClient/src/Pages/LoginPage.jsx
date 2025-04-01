@@ -54,7 +54,9 @@ const LoginPages = () => {
             </div>
           </div>
           <div className="mt-6">
-            <h1 className="font-bold text-gray-200">or use your email account</h1>
+            <h1 className="font-bold text-gray-200">
+              or use your email account
+            </h1>
           </div>
           <div className="mt-6 w-96 p-6 bg-white shadow-lg rounded-lg">
             <input

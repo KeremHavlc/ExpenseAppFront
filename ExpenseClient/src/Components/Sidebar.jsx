@@ -102,7 +102,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div
         className="text-3xl font-bold mb-8 text-center cursor-pointer select-none"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
       >
         Logo
       </div>

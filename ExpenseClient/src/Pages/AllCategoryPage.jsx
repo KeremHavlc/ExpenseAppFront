@@ -149,7 +149,7 @@ const AllCategoriesPage = () => {
                   </Card>
                 ))
             ) : (
-              <p className="text-gray-500">Henüz kategori bulunmamaktadır.</p>
+              <p className="text-gray-500"></p>
             )}
           </div>
 
